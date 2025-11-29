@@ -19,11 +19,14 @@ echo "✅ Dependencies installed"
 echo ""
 echo "🚀 Starting services..."
 echo ""
-echo "Backend will run on: http://localhost:3000"
+
+# Find available port for backend (default 3001)
+BACKEND_PORT=3001
+echo "Backend will run on: http://localhost:${BACKEND_PORT}"
 echo "Frontend will run on: http://localhost:5173"
 echo ""
 echo "Press Ctrl+C to stop all services"
 echo ""
 
-# Start backend and frontend concurrently
-(trap 'kill 0' SIGINT; npm run dev & cd frontend && npm run dev)
+# Start backend and frontend concurrently with explicit PORT
+(trap 'kill 0' SIGINT; PORT=${BACKEND_PORT} npm run dev & cd frontend && npm run dev)
