@@ -6,6 +6,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { TemplatesPage } from './pages/TemplatesPage';
 import { MessagesPage } from './pages/MessagesPage';
 import { SendMessagePage } from './pages/SendMessagePage';
+import { WebhookPage } from './pages/WebhookPage';
 
 function App() {
   const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
@@ -53,6 +54,7 @@ function App() {
         <Route path="/templates" element={<TemplatesPage />} />
         <Route path="/messages" element={<MessagesPage />} />
         <Route path="/send" element={<SendMessagePage />} />
+        <Route path="/webhooks" element={<WebhookPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

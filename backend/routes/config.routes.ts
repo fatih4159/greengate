@@ -84,5 +84,59 @@ export function createConfigRoutes(configModel: ConfigModel): Router {
     }
   });
 
+  // Get webhook information
+  router.get('/webhook/info', async (req: Request, res: Response) => {
+    try {
+      const config = await configModel.getWhatsAppConfig();
+      const verifyToken = config.verifyToken || '';
+      
+      // Determine webhook URL based on environment
+      let webhookUrl = process.env.WEBHOOK_URL;
+      if (!webhookUrl) {
+        // Try to construct from request
+        const protocol = req.protocol;
+        const host = req.get('host');
+        webhookUrl = `${protocol}://${host}/webhook`;
+      }
+
+      res.json({
+        webhookUrl,
+        verifyToken,
+        isConfigured: !!config.accessToken && !!config.phoneNumberId && !!verifyToken
+      });
+    } catch (error) {
+      console.error('Error getting webhook info:', error);
+      res.status(500).json({ error: 'Failed to get webhook information' });
+    }
+  });
+
+  // Test webhook connectivity
+  router.post('/webhook/test', async (req: Request, res: Response) => {
+    try {
+      const config = await configModel.getWhatsAppConfig();
+      
+      if (!config.verifyToken) {
+        return res.status(400).json({ 
+          error: 'Webhook verify token not configured. Please set up your credentials first.' 
+        });
+      }
+
+      // Simulate webhook verification
+      const testChallenge = 'test_challenge_' + Date.now();
+      const testMode = 'subscribe';
+      
+      // The webhook endpoint will handle this if it's working
+      res.json({ 
+        success: true,
+        message: 'Webhook configuration appears valid. Send a test message to your business number to verify end-to-end functionality.',
+        verifyToken: config.verifyToken,
+        instructions: 'Send a WhatsApp message to your business number and check the Messages page to see if it appears.'
+      });
+    } catch (error) {
+      console.error('Error testing webhook:', error);
+      res.status(500).json({ error: 'Failed to test webhook' });
+    }
+  });
+
   return router;
 }

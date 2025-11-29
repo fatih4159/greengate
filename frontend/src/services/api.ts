@@ -44,6 +44,19 @@ export interface Message {
   updated_at?: string;
 }
 
+export interface WebhookInfo {
+  webhookUrl: string;
+  verifyToken: string;
+  isConfigured: boolean;
+}
+
+export interface WebhookTestResult {
+  success: boolean;
+  message: string;
+  verifyToken?: string;
+  instructions?: string;
+}
+
 class ApiService {
   // Config endpoints
   async getConfig(): Promise<ConfigStatus> {
@@ -114,6 +127,17 @@ class ApiService {
     text: string;
   }): Promise<any> {
     const response = await axios.post(`${API_BASE_URL}/messages/send-text`, data);
+    return response.data;
+  }
+
+  // Webhook endpoints
+  async getWebhookInfo(): Promise<WebhookInfo> {
+    const response = await axios.get(`${API_BASE_URL}/config/webhook/info`);
+    return response.data;
+  }
+
+  async testWebhook(): Promise<WebhookTestResult> {
+    const response = await axios.post(`${API_BASE_URL}/config/webhook/test`);
     return response.data;
   }
 }
