@@ -16,6 +16,8 @@ export function createWebhookRoutes(
       const challenge = req.query['hub.challenge'];
 
       console.log('Webhook verification request received');
+      console.log('Query params:', req.query);
+      console.log('Mode:', mode, 'Token:', token, 'Challenge:', challenge);
 
       if (mode === 'subscribe') {
         // Get verify token from config
